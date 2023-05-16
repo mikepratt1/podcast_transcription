@@ -30,6 +30,12 @@ transcriptions = model.transcribe(audio_paths)
 
 
 # %% --------------------------------------------------------------------------
-# 
+# Testing OpenAI whisper
 # -----------------------------------------------------------------------------
 import whisper
+model = whisper.load_model("base")
+result = model.transcribe('audio_files/harvard.wav')
+print(result["text"])
+
+
+# %%
