@@ -14,19 +14,13 @@ __author__ = "MikePratt"
 # -----------------------------------------------------------------------------
 import gradio as gr
 import whisper # add to requirements.txt
-from huggingsound import SpeechRecognitionModel
 
-def transcribe(audio_file):
-    
-    try:
-        model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-english")
-        audio_paths = [audio_file]
-        transcriptions = model.transcribe(audio_paths)
-        return transcriptions[0]['transcription']
+model = whisper.load_model("base")
+def speech_to_text(file):
+    result = model.transcribe(file[1], fp16=False, verbose=True)
+    text = result["text"]
+    return text
 
-    except:
-        return "There seems to be an error with your audio file, please ensure the following:\n-File is .wav or .mp4\n-You've not been an idiot"
-    
 with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
@@ -35,7 +29,7 @@ with gr.Blocks() as demo:
         with gr.Column():
             transcription = gr.Textbox(label="Transcription")
 
-    transcribe_btn.click(transcribe, inputs=audio, outputs=transcription)
+    transcribe_btn.click(speech_to_text, inputs=audio, outputs=transcription)
 
 
         
@@ -44,4 +38,4 @@ with gr.Blocks() as demo:
 #                     outputs=gr.Text())
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(show_error=True)
